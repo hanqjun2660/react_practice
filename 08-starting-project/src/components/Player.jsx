@@ -7,6 +7,7 @@ export default function Player() {
 
     function handleClick() {
         setEnteredPlayerName(playerName.current.value);  // Ref를 사용할때 current 속성 먼저 접근해야함.
+        playerName.current.value = '';
     }
 
     return (
