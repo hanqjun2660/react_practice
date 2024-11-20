@@ -1,8 +1,7 @@
 import { calculateInvestmentResults, formatter } from '../util/investment.js';
 
-
 export default function Results({ input }) {
-  const results = [];
+  const results = [];       // 함수 밖에서 선언하면 리액트에 의해 변화를 감지할 수 없으므로 동일한 메모리 내에 데이터가 추가되어 key가 중첩된다는 에러가 발생하게 됨.
   calculateInvestmentResults(input, results);
 
   if(results.length === 0) {
