@@ -7,11 +7,18 @@ import DeleteConfirmation from './components/DeleteConfirmation.jsx';
 import logoImg from './assets/logo.png';
 import {sortPlacesByDistance} from "./loc.js";
 
+/* 이렇게 즉시 데이터를 가져와 처리할 수 있는 경우 useEffect로 사용할 필요가 없다. */
+// 로컬 스토리지에 존재하는 장소 id 가져옴
+const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+// 로컬 스토리지에 존재하는 장소 id를 AVAILABLE_PLACES에서 찾아서 해당되는 데이터만 가져옴
+const storedPlaces = storedIds.map(id => AVAILABLE_PLACES.find((place) => place.id === id));
+
 function App() {
-  const modal = useRef();
+
   const selectedPlace = useRef();
+  const[modalIsOpen, setModalIsOpen] = useState(false);
   const [availablePlaces, setAvailablePlaces] = useState([]);
-  const [pickedPlaces, setPickedPlaces] = useState([]);
+  const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
 
   /*
     useEffect는 다른 React Hook과 다르게 값을 반환하지 않음.
@@ -28,12 +35,12 @@ function App() {
 
 
   function handleStartRemovePlace(id) {
-    modal.current.open();
+    setModalIsOpen(true);
     selectedPlace.current = id;
   }
 
   function handleStopRemovePlace() {
-    modal.current.close();
+    setModalIsOpen(false);
   }
 
   function handleSelectPlace(id) {
@@ -50,7 +57,7 @@ function App() {
       리액트 앱의 랜더링과 상관없는 부수효과 코드이지만 상태를 변경하지 않는다.
       이런경우 useEffect를 사용하지 않아도 된다.(그리고 해당 코드는 함수내 있기 때문에 useEffect 사용시 hook 규칙을 위반한다.)
      */
-    const storedIds = JSON.stringify(localStorage.getItem('seletedPlaces')) || [];
+    const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
     if(storedIds.indexOf(id) === -1) {
       localStorage.setItem('selectedPlaces', JSON.stringify([id, ...storedIds]));
     }
@@ -60,12 +67,16 @@ function App() {
     setPickedPlaces((prevPickedPlaces) =>
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
-    modal.current.close();
+    setModalIsOpen(false);
+
+    // 로컬 스토리지에 있는 데이터 삭제
+    const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+    localStorage.setItem('selectedPlaces', JSON.stringify(storedIds.filter((id) => id !== selectedPlace.current)))
   }
 
   return (
     <>
-      <Modal ref={modal}>
+      <Modal open={modalIsOpen} onClose={handleStopRemovePlace}>
         <DeleteConfirmation
           onCancel={handleStopRemovePlace}
           onConfirm={handleRemovePlace}
