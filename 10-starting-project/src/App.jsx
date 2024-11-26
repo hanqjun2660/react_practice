@@ -5,10 +5,8 @@ import Product from "./components/Product.jsx";
 import CartContextProvider from "./store/shopping-cart-context.jsx";
 
 function App() {
-
-
   return (
-    <CartContextProvider>
+    <CartContextProvider>   // children에서 Context를 사용하기 위해 CartContext.Provider를 반환하는 컴포넌트를 사용
       <Header />
       <Shop>
           {DUMMY_PRODUCTS.map((product) => (
