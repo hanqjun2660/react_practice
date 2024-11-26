@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
 import Places from './components/Places.jsx';
 import { AVAILABLE_PLACES } from './data.js';
@@ -63,16 +63,21 @@ function App() {
     }
   }
 
-  function handleRemovePlace() {
+  /*
+  함수가 재생성되지 않도록 해주는 React Hook useCallback.
+  useCallback은 값을 반환한다.
+  함수를 useEffect의 종속성으로 넘기는 경우에 사용하면 좋다.(메모리에 함수를 저장해서 다시 사용하는 방식 덕분)
+   */
+  const handleRemovePlace = useCallback(function handleRemovePlace() {    // 함수를 첫번째 인자로, 두번째 인자는 종속성 배열
     setPickedPlaces((prevPickedPlaces) =>
-      prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
+        prevPickedPlaces.filter((place) => place.id !== selectedPlace.current)
     );
     setModalIsOpen(false);
 
     // 로컬 스토리지에 있는 데이터 삭제
     const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
     localStorage.setItem('selectedPlaces', JSON.stringify(storedIds.filter((id) => id !== selectedPlace.current)))
-  }
+  }, []);   // 종속성 배열은 원하는 상태에 따라 변경이 필요하다면 의존으로 추가하면 된다.(useEffect가 의존성 상태에 따라 재실행되는 원리와 같음.)
 
   return (
     <>
