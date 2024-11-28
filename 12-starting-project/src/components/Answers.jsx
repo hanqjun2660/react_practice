@@ -1,4 +1,3 @@
-import QUESTIONS from "../questions.js";
 import {useRef} from "react";
 
 export default function Answers({answers, selectedAnswer, answerState, onSelect}) {
@@ -26,19 +25,19 @@ export default function Answers({answers, selectedAnswer, answerState, onSelect}
         <ul id="answers">
             {shuffledAnswers.current.map(answer => {
                 const isSelected = selectedAnswer === answer;
-                let cssClasses = '';
+                let cssClass = '';
 
-                if(answerState === 'answerd' && isSelected) {
-                    cssClasses = 'selected';
+                if(answerState === 'answered' && isSelected) {
+                    cssClass = 'selected';
                 }
 
                 if((answerState === 'correct' || answerState === 'wrong') && isSelected) {
-                    cssClasses = answerState;
+                    cssClass = answerState;
                 }
 
                 return(
                     <li key={answer} className="answer">
-                        <button className={cssClasses} onClick={() => onSelect(answer)}>{answer}</button>
+                        <button className={cssClass} onClick={() => onSelect(answer)} disabled={answerState !== ''}>{answer}</button>
                     </li>
                 );
             })}
