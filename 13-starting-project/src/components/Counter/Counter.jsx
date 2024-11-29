@@ -1,4 +1,4 @@
-import { useState, memo, useCallback } from 'react';
+import { useState, memo, useCallback, useMemo } from 'react';
 
 import IconButton from '../UI/IconButton.jsx';
 import MinusIcon from '../UI/Icons/MinusIcon.jsx';
@@ -33,7 +33,14 @@ function isPrime(number) {
  */
 const Counter = memo(function Counter({ initialCount }) {
   log('<Counter /> rendered', 1);
-  const initialCountIsPrime = isPrime(initialCount);
+
+  /**
+   * useMemo는 복잡한 계산이 있을 경우만 사용하는걸 권장한다.
+   * useMemo는 계산결과를 메모라이징하고 의존성 배열에 있는 의존성이 변경되었을 경우만 재실행한다.
+   * useMemo가 없다면 isPrime함수는 Counter 컴포넌트가 재실행될때마다 실행된다.(성능저하)
+   * useMemo가 있다면 현재 설정된 useMemo의 의존성 initialCount 때문에 initialCount가 변경되었을때만 재실행한다.
+   */
+  const initialCountIsPrime = useMemo(() => isPrime(initialCount), [initialCount]);
 
   const [counter, setCounter] = useState(initialCount);
 
