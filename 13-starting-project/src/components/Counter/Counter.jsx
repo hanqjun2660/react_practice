@@ -28,7 +28,8 @@ function isPrime(number) {
 }
 
 /**
- * memo를 사용하면 상위 컴포넌트가 재실행 되더라도 컴포넌트 함수의 props가 변경되지 않았다면 재실행을 저지함.
+ * 1. memo를 사용하면 상위 컴포넌트가 재실행 되더라도 컴포넌트 함수의 props가 변경되지 않았다면 재실행을 저지함.
+ * 2. App 컴포넌트에서 관리하던 상태를 컴포넌트를 추가하여 분리하였으니 해당 컴포넌트에서 memo가 불필요하다. 하지만 일단 남겨두었다.
  */
 const Counter = memo(function Counter({ initialCount }) {
   log('<Counter /> rendered', 1);
